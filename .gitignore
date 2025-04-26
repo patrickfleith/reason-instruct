@@ -1,5 +1,7 @@
-moral-dilemma-reasoning/personas/*
-.venv-reasoning-compet/*
+/moral-dilemma-reasoning/*
+.venv-reasoning-compet/
 .env
 secrets.env
-
+reason-instruct/__pycache__
+reason-instruct/playground/*
+*.jsonl
