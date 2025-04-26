@@ -1,0 +1,5 @@
+moral-dilemma-reasoning/personas/*
+.venv-reasoning-compet/*
+.env
+secrets.env
+
