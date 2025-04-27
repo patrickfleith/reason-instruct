@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Import template from prompts.py
 from prompts import INSTRUCTION_EXTRACTION_TEMPLATE
-
+from datamodels import AtomicInstructions
 # Load environment variables
 load_dotenv()
 
@@ -17,8 +17,6 @@ if os.getenv('OPENAI_API_KEY'):
 os.environ['CURATOR_DISABLE_CACHE'] = '1'
 
 # Define structured output model
-class AtomicInstructions(BaseModel):
-    instructions: List[str] = Field(description="A list of atomic instructions extracted from the prompt")
 
 
 class InstructionExtractor(curator.LLM):

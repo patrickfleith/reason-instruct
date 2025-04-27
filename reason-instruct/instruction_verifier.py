@@ -71,6 +71,43 @@ def verify_instructions(user_query: str, candidate_answer: str, atomic_instructi
     )
 
 
+def generate_critique(verification_results: InstructionVerificationResults) -> str:
+    """Generate a formatted critique string from the verification results.
+    
+    Args:
+        verification_results: The results of instruction verification
+        
+    Returns:
+        A formatted string containing a summary and detailed critique of each instruction
+    """
+    critique_parts = []
+    
+    # Add summary header
+    critique_parts.append("\nLet's verify that the answer satisfies all instructions:")
+    
+    # Add detailed analysis for each instruction
+    for i, result in enumerate(verification_results.results):
+        critique_parts.append(f"\nInstruction {i+1}: {result.instruction}")
+        critique_parts.append(f"Explanation: {result.analysis.explanation}")
+        critique_parts.append(f"Status: {'✓ Satisfied' if result.analysis.satisfied else '✗ Not satisfied'}")
+        
+        if not result.analysis.satisfied:
+            critique_parts.append(f"Recommendation: {result.analysis.recommendation}")
+    
+    # # Add satisfaction ratio
+    # ratio = verification_results.satisfaction_ratio
+    # critique_parts.append(f"Satisfaction ratio: {ratio:.2f} ({verification_results.satisfied_count}/{verification_results.total_count})")
+
+    # Final assessment
+    if verification_results.satisfaction_ratio == 1.0:
+        critique_parts.append("\nOverall assessment: All instructions have been satisfied. I can now answer the user query.")
+    else:
+        critique_parts.append(f"\nOverall assessment: {verification_results.total_count - verification_results.satisfied_count} "  
+                           f"instruction(s) need attention to fully satisfy the requirements.")
+    
+    return "\n".join(critique_parts)
+
+
 # Example usage
 if __name__ == "__main__":
     # Sample data
