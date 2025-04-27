@@ -1,7 +1,8 @@
-from datafast.llms import OpenAIProvider
+from datafast.llms import OpenAIProvider, GeminiProvider
 import prompts
 from dotenv import load_dotenv
 import os
+import random
 from typing import List, Dict, Tuple
 from datamodels import AtomicInstructions, InstructionAnalysis, InstructionVerificationResult, InstructionVerificationResults
 from instruction_verifier import generate_critique, verify_instructions, verify_instruction
@@ -10,11 +11,11 @@ from instruction_verifier import generate_critique, verify_instructions, verify_
 load_dotenv()
 
 # Initialize OpenAI providers
-query_analyzer_provider = OpenAIProvider(model_id="gpt-4.1-mini")
-answer_provider = OpenAIProvider(model_id="gpt-4.1-mini")
+query_analyzer_provider = GeminiProvider(model_id="gemini-2.0-flash")
+answer_provider = GeminiProvider(model_id="gemini-2.0-flash")
 refinement_provider = OpenAIProvider(model_id="gpt-4.1")
-instruction_extractor_provider = OpenAIProvider(model_id="gpt-4.1-mini")
-verification_provider = OpenAIProvider(model_id="gpt-4.1-mini")
+instruction_extractor_provider = OpenAIProvider(model_id="gpt-4.1")
+verification_provider = OpenAIProvider(model_id="gpt-4.1")
 
 
 def analyze_query(user_query: str) -> str:
@@ -31,7 +32,7 @@ def analyze_query(user_query: str) -> str:
     )
     
     analysis = query_analyzer_provider.generate(prompt=prompt)
-    return f"Query Analysis:\n{analysis}"
+    return f"{analysis}"
 
 
 def extract_instructions(user_query: str) -> AtomicInstructions:
@@ -55,18 +56,32 @@ def extract_instructions(user_query: str) -> AtomicInstructions:
     return instructions
 
 
-def generate_initial_answer(user_query: str) -> str:
-    """Generate initial answer to user query.
+def generate_initial_answer(atomic_instructions: AtomicInstructions) -> Tuple[str, List[str]]:
+    """Generate initial answer based on extracted atomic instructions.
     
     Args:
-        user_query: The query from the user
+        atomic_instructions: The atomic instructions extracted from the user query
         
     Returns:
-        Initial answer to the query
+        Tuple containing (initial_answer, selected_instructions)
     """
-    prompt = f"Please answer this question or follow this instruction: {user_query}"
+    # Deliberately select only a subset of instructions
+    # Always include the first instruction, then each additional instruction with 50% probability
+    selected_instructions = []
     
-    answer = answer_provider.generate(prompt=prompt)
+    if atomic_instructions.instructions:
+        # Always include the first instruction
+        selected_instructions.append(atomic_instructions.instructions[0])
+        
+        # For each remaining instruction, include it with 50% probability
+        for instr in atomic_instructions.instructions[1:]:
+            if random.random() < 0.5:  # 50% chance
+                selected_instructions.append(instr)
+    
+    # Convert selected instructions to a formatted prompt
+    instructions_text = "\n".join([f"{instr}" for instr in selected_instructions])
+    
+    answer = answer_provider.generate(prompt=instructions_text)
     return answer
 
 
@@ -120,9 +135,10 @@ def generate_reasoning_trace(
     # instructions_text = "Extracted instructions:\n" + "\n".join([f"- {instr}" for instr in atomic_instructions.instructions])
     # reasoning_trace.append(instructions_text)
     
-    # Step 3: Generate initial answer
-    initial_answer = generate_initial_answer(user_query)
-    reasoning_trace.append(f"I'll draft an initial answer:\n{initial_answer}")
+    # Step 3: Generate initial answer using the extracted instructions
+    initial_answer = generate_initial_answer(atomic_instructions)
+    
+    reasoning_trace.append(f"I'll draft an initial answer based on all extracted instructions:\n{initial_answer}")
     
     # Step 4: Verify and refine
     current_answer = initial_answer

@@ -5,3 +5,5 @@ secrets.env
 reason-instruct/__pycache__
 reason-instruct/playground/*
 *.jsonl
+data/*
+reason-instruct/data/*
