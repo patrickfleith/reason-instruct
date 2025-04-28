@@ -2,7 +2,7 @@
 
 ## Dataset Description
 
-Reason-Instruct is a novel dataset designed to measure and improve how language models follow complex instructions by breaking them down into atomic components. This dataset captures the full reasoning process of instruction understanding, verification, and iterative refinement.
+Reason-Instruct is a dataset designed to improve how reasoning language models follow complex instructions by breaking them down into atomic components, systematically verifying each step, and iteratively refining the answer until all instructions are satisfied
 
 ## Motivation
 
@@ -10,8 +10,7 @@ Many existing instruction datasets focus on single-turn responses without provid
 
 1. Explicitly extracting atomic instructions from complex user queries
 2. Verifying instruction satisfaction through structured evaluation
-3. Capturing the iterative refinement process when instructions are missed
-4. Providing rich metadata about the verification and refinement process
+3. Capturing the iterative refinement process when instructions are missed until all instructions are satisfied
 
 ## Composition and Structure
 
