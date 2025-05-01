@@ -1,6 +1,7 @@
 QUERY_ANALYSIS_TEMPLATE = (
-    "Here is a user query {user_query} \n\n"
-    "Analysze and explain me what is the user asking. Pay attention to specific requests if any"
+    "User query: {user_query}\n\n"
+    "Analyze what the user is asking for. Identify specific requests and instructions.\n"
+    "Break down the query into its core components without providing answers or making assumptions."
 )
 
 INSTRUCTION_EXTRACTION_TEMPLATE = (
@@ -22,11 +23,11 @@ INSTRUCTION_EXTRACTION_TEMPLATE = (
     "   b. For each atomic question, create an instruction of the form 'Need an answer to: [question]'.\n"
     "   c. Example: 'What is X and how does Y affect Z?' should become two instructions: 'Need an answer to: What is X?' and 'Need an answer to: How does Y affect Z?'\n"
     "If there are no explicit instructions, disguised instructions, or genuine questions, return an empty list.\n\n"
+    "It is very important to break up queries into atomic instructions.\n\n"
     "User prompt:\n"
-    "{user_prompt}\n\n"
+    "{user_query}\n\n"
     "Extract ONLY the explicit atomic instructions as a list, distinguishing between disguised instructions and genuine questions."
 )
-
 
 INSTRUCTION_VERIFICATION_TEMPLATE = (
     "You are an expert at verifying if an instruction is satisfied. "
@@ -42,7 +43,9 @@ ANSWER_REFINEMENT_TEMPLATE = (
     "User query: {user_query}\n\n"
     "Candidate answer: {candidate_answer}\n\n"
     "Critique: {critique}\n\n"
-    "Now improve the answer considering the critique."
+    "Now improve the answer considering the critique. "
+    "Only answer with the improved answer, nothing else."
 )
 
+ANSWER_GENERATION_TEMPLATE = "{instructions}"
 

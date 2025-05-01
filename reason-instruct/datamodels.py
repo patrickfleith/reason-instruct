@@ -1,7 +1,9 @@
 from pydantic import BaseModel, Field
 
+# Define data models
 class AtomicInstructions(BaseModel):
-    instructions: list[str] = Field(description="A list of atomic instructions extracted from the prompt")
+    """Container for atomic instructions extracted from user query."""
+    instructions: list[str] = Field(description="List of atomic instructions extracted from the user query.")
 
 class InstructionAnalysis(BaseModel):
     explanation: str = Field(description="Explanation of why the instruction is satisfied or not")
@@ -21,4 +23,3 @@ class InstructionVerificationResults(BaseModel):
     def satisfaction_ratio(self) -> float:
         """Calculate the ratio of satisfied instructions to total instructions"""
         return self.satisfied_count / self.total_count if self.total_count > 0 else 0.0
-
