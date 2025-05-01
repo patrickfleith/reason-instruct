@@ -7,3 +7,6 @@ reason-instruct/playground/*
 *.jsonl
 data/*
 reason-instruct/data/*
+reason-instruct/results/*
+.DS_Store
+.windsurfrules
