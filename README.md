@@ -7,7 +7,7 @@ Have you ever felt frustrated when a language model does not follow some of the 
 **Instruction-freak-reasoning** is a dataset designed to fix that issue. Given a user query, the reasoning trace:
 
 1. Breaks down the instructions into atomic components
-2. Makes an initial answer (deliberately incomplete)
+2. Makes an initial answer (possibly incomplete)
 3. Systematically verifies the candidate answer against each atomic instruction
 4. Iteratively refines the answer until all atomic instructions are satisfied
 
